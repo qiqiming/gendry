@@ -413,7 +413,12 @@ func resolveUpdate(update map[string]interface{}) (string, []interface{}) {
 	keys, vals := resolveKV(update)
 	var sets string
 	for _, k := range keys {
-		sets += fmt.Sprintf("%s=?,", quoteField(k))
+		if strings.Contains(k, "=") {
+			k = quoteField(k)
+			sets += fmt.Sprintf("%s?,", k)
+		} else {
+			sets += fmt.Sprintf("%s=?,", quoteField(k))
+		}
 	}
 	sets = strings.TrimRight(sets, ",")
 	return sets, vals
